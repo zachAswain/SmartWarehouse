@@ -38,4 +38,15 @@ public class WarehouseSensor
         IsActive = false;
         IsAlertTriggered = false;
     }
+
+    public void RecordReading(double newTemperature)
+    {
+        if (!IsActive) throw new InvalidOperationException();
+        
+        if (newTemperature < -50.0 || newTemperature > 80.0) throw new ArgumentOutOfRangeException();
+        
+        CurrentTemperature = newTemperature;
+        
+        IsAlertTriggered = newTemperature >= CriticalThresholdCelsius;
+    }
 }
