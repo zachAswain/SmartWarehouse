@@ -27,4 +27,15 @@ public class WarehouseSensor
         IsAlertTriggered = false;
         CurrentTemperature = 0.0;
     }
+
+    public void Activate()
+    {
+        IsActive = true;
+    }
+
+    public void Deactivate()
+    {
+        IsActive = false;
+        IsAlertTriggered = false;
+    }
 }
