@@ -49,4 +49,13 @@ public class WarehouseSensor
         
         IsAlertTriggered = newTemperature >= CriticalThresholdCelsius;
     }
+
+    public void UpdateThreshold(double newThreshold)
+    {
+        if (newThreshold <-30.0 || newThreshold > 50.0) throw new ArgumentOutOfRangeException();
+
+        CriticalThresholdCelsius = newThreshold;
+
+        IsAlertTriggered = CurrentTemperature >= CriticalThresholdCelsius;
+    }
 }
