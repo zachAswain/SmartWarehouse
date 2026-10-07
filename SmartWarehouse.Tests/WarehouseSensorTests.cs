@@ -144,5 +144,22 @@ public sealed class WarehouseSensorTests
         Assert.ThrowsExactly<InvalidOperationException>(() => sensor.RecordReading(10.0));
     }
 
+    [TestMethod]
+    [DataRow(3.9, false)] // below default threshold (4.0)
+    [DataRow(4.0, true)] // at default threshold
+    [DataRow(4.1, true)] // above default threshold
+    public void RecordReading_Should_Set_Alert_Based_On_Threshold(double temperature, bool expectedAlert)
+    {
+        // Arrange
+        WarehouseSensor sensor = new WarehouseSensor("001", "Location 1");
+        sensor.Activate();
 
+        // Act
+        sensor.RecordReading(temperature);
+
+        // Assert
+        Assert.AreEqual(expectedAlert, sensor.IsAlertTriggered);
+    }
+    
+    
 }
