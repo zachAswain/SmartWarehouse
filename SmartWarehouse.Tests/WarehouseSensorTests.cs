@@ -189,4 +189,50 @@ public sealed class WarehouseSensorTests
         // Act and Assert
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => sensor.RecordReading(temperature));
     }
+
+    [TestMethod]
+    public void UpdateThreshold_RaiseLimit_Should_Clear_Alert()
+    {
+        // Arrange
+        WarehouseSensor sensor = new WarehouseSensor("001", "Location 1");
+        sensor.Activate();
+        sensor.RecordReading(5.0);
+        Assert.IsTrue(sensor.IsAlertTriggered);
+
+        // Act
+        sensor.UpdateThreshold(10.0);
+
+        // Assert
+        Assert.IsFalse(sensor.IsAlertTriggered);
+        Assert.AreEqual(10.0,sensor.CriticalThresholdCelsius);
+    }
+
+    [TestMethod]
+    public void UpdateThreshold_LowerLimit_Should_Set_Alert()
+    {
+        // Arrange
+        WarehouseSensor sensor = new WarehouseSensor("001", "Location 1");
+        sensor.Activate();
+        sensor.RecordReading(3.5);
+        Assert.IsFalse(sensor.IsAlertTriggered);
+
+        // Act
+        sensor.UpdateThreshold(3.0);
+
+        // Assert
+        Assert.IsTrue(sensor.IsAlertTriggered);
+        Assert.AreEqual(3.0, sensor.CriticalThresholdCelsius);
+    }
+
+    [TestMethod]
+    [DataRow(-30.1)]
+    [DataRow(50.1)]
+    public void UpdateThreshold_OutsideRange_Should_Throw_Exception(double threshold)
+    {
+        // Arrange
+        WarehouseSensor sensor = new WarehouseSensor("001", "Location 1");
+
+        // Act and Assert
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => sensor.UpdateThreshold(threshold));
+    }
 }
