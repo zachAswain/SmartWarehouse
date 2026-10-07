@@ -160,6 +160,33 @@ public sealed class WarehouseSensorTests
         // Assert
         Assert.AreEqual(expectedAlert, sensor.IsAlertTriggered);
     }
-    
-    
+
+    [TestMethod]
+    [DataRow(-50.0)]
+    [DataRow(80.0)]
+    public void RecordReading_BoundaryValues_Should_Succeed(double temperature)
+    {
+        // Arrange
+        WarehouseSensor sensor = new WarehouseSensor("001", "Location 1");
+        sensor.Activate();
+
+        // Act
+        sensor.RecordReading(temperature);
+
+        // Assert
+        Assert.AreEqual(temperature, sensor.CurrentTemperature);
+    }
+
+    [TestMethod]
+    [DataRow(-50.1)]
+    [DataRow(80.1)]
+    public void RecordReading_BoundaryValues_Should_Throw_Exception(double temperature)
+    {
+        // Arrange
+        WarehouseSensor sensor = new WarehouseSensor("001", "Location 1");
+        sensor.Activate();
+
+        // Act and Assert
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => sensor.RecordReading(temperature));
+    }
 }
